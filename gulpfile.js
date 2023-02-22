@@ -4,6 +4,8 @@ const htmlMin = require('gulp-htmlmin')
 const inject = require('gulp-inject')
 
 const less = require('gulp-less')
+const postCss = require('gulp-postcss')
+const postPresetEnv = require('postcss-preset-env')
 const cssMin = require('gulp-cssmin')
 
 const babel = require('gulp-babel')
@@ -20,6 +22,7 @@ const htmlTask = () => {
 const cssTask = () => {
   return src('./src/css/**/*.less', { base: './src' }) // 保持对应目录结构不变
   .pipe(less()) // 处理 less
+  .pipe(postCss([postPresetEnv()])) // 自动增加浏览器前缀
   .pipe(cssMin()) // 压缩 css
   .pipe(dest('./dist/'))
 }
@@ -32,7 +35,5 @@ const jsTask = () => {
 }
 
 const srcTask = series(htmlTask, cssTask, jsTask)
-
-watch([ './src/js/**/*.js', './src/css/**/*.css' ], srcTask)
 
 module.exports.default = srcTask

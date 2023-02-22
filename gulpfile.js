@@ -14,6 +14,8 @@ const inject = require('gulp-inject')
 
 const browser = require('browser-sync')
 
+const clean = require('gulp-clean')
+
 const htmlTask = () => {
   return src('./src/index.html')
   .pipe(htmlMin({
@@ -48,8 +50,6 @@ const injectTask = () => {
   .pipe(dest('./dist/'))
 }
 
-const srcTask = series(htmlTask, cssTask, jsTask, injectTask)
-
 // 搭建本地服务器
 const server = browser.create()
 const serverTask = () => {
@@ -61,14 +61,23 @@ const serverTask = () => {
   server.init({
     port: 3000,
     open: true,
-    files: "./dist/*",
+    files: './dist/*',
     server: {
       baseDir: './dist/'
     }
   })
 }
 
+// 清空 dist 目录
+const cleanTask = () => {
+  return src('dist')
+  .pipe(clean())
+}
+
+const buildTask = series(cleanTask, parallel(htmlTask, cssTask, jsTask), injectTask)
+const devTask = series(buildTask, serverTask)
+
 module.exports = {
-  srcTask,
-  serverTask
+  devTask,
+  buildTask
 }

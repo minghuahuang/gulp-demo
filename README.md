@@ -8,8 +8,12 @@ npn install
 
 ### 启动项目  
 
+开发环境
 ```shell
-npx gulp
+npm run dev
 ```
 
-`dist/` 目录下查看文件状态，浏览器本地打开 `index.html` 文件。  
+生产环境
+```shell
+npm run build
+```
